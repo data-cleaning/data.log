@@ -20,13 +20,13 @@
 #' }
 #' 
 #' @export
-filedump <- function(out, write = function(x,file) write.csv2(x=x,file=file,row.names=FALSE)){
+filedump <- function(out, write = function(x,file) write.csv2(x=x,file=file,row.names=FALSE), name="file-dump"){
   if (missing(out)){
     out <- tempdir()
     logger_adddb("file-dump", db=out, close=function(...) invisible(NULL))
   }
   if (!file.exists(out)){
-    warning(sprintf("The location %s could not be found.",out))
+    dir.create(out)
   }
   
   outdir <- out
@@ -35,9 +35,10 @@ filedump <- function(out, write = function(x,file) write.csv2(x=x,file=file,row.
     function(old, new,...){
       missing(old) # so 'old' gets used
       method <- as.character(sys.call(1)[[1]])
-      fn <- sprintf("dump-%03d-%s.csv",cntr,method)
-      write(new,file=fn)
+      fn <- file.path(out,sprintf("dump-%03d-%s.csv",cntr,method))
+      tryCatch(write(new,file=fn),error=warning)
       cntr <<- cntr + 1
+      new
     }
     , name="file-dump"
   )

@@ -57,7 +57,7 @@ logregistry <- setRefClass("logregistry"
       if (is.null(.self$.loggers[[name]])){
         invisible(TRUE)
       }
-      rm(name,envir=.self$.loggers)
+      do.call("rm",list(name,envir=.self$.loggers))
       invisible(TRUE)
     }
     # check existence of a database
