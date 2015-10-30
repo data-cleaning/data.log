@@ -1,7 +1,7 @@
-Package: validate.log
+Package: datalog
 Maintainer: Mark van der Loo <mark.vanderloo@gmail.com>
 License: GPL-3
-Title: Logging framework for data cleaning
+Title: Logging framework for tracking updates in data
 LazyData: no
 Type: Package
 LazyLoad: yes
