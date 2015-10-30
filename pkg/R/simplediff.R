@@ -92,9 +92,10 @@ simple_diff <- function(db){
         , new=format(new[A])
         , method = rep(method,nlog)
         , note= if ( is.null(note) ) rep(NA_character_,nlog) else rep(note,nlog)
-        , stringsAsFactors=FALSE
+        ,stringsAsFactors=FALSE
       )
-      RSQLite::dbWriteTable(con, "log", diff,append=TRUE) 
+      print(diff)
+      RSQLite::dbWriteTable(con, "log", diff,append=TRUE,row.names=FALSE) 
     }
     , name="simple-diff"
   )
