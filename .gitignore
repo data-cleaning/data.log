@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 validate.Rproj
+pkg/DESCRIPTION
+pkg/NAMESPACE
+pkg/man/*
