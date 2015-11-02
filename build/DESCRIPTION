@@ -1,4 +1,4 @@
-Package: datalogger
+Package: data.log
 Maintainer: Mark van der Loo <mark.vanderloo@gmail.com>
 License: GPL-3
 Title: Logging framework for tracking updates in data
