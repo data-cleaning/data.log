@@ -5,15 +5,42 @@ logger <- setRefClass("logger", fields=c(con="ANY"))
 
 #' Call the loggers
 #'
+#' Get the registered loggers for a function and execute them.
+#'
 #' @param old Old dataset to pass to the logger(s)
 #' @param new New dataset to pass to the logger(s)
 #' @param ... Extra arguments passed to the loggers
+#'
+#' @section Details:
+#' This function is the hook for programmers who want to 
+#' enable their function to register for logging with the 
+#' \code{data.log} package. This function does the following
+#' things.
+#' \enumerate{
+#'   \item{It finds out what function is called \code{write_log}.}
+#'   \item{It asks the central logging registry what loggers are registered for the calling function.}
+#'   \item{The loggers are called, passing the arguments \code{old=old, new=new, method=method}}
+#'   \item{The set \code{new} is returned, invisibly}
+#' }
+#' 
+#' @seealso \code{\link{csvdump}}
+#' 
+#' @examples
+#' # The following function multiplies the cell in the first row and column with two
+#' # and asks the registered logger(s) (if any) to log the difference.
+#' change <- function(df){
+#'   .df <- df
+#'   df[1,1] <- 2*df[1,1]
+#'   writelog(old=.df, new=df)
+#' } 
+#' 
 #'
 #' @export 
 write_log <- function(old, new, ...){
   fn <- as.character(sys.call(1)[[1]])
   loggers <- LOGREG$getloggers(fn)
-  for ( lg in loggers ) lg$log(old, new, ...)
+  for ( lg in loggers ) lg$log(old=old, new=new, method=fn, ...)
+  invisible(new)
 }
 
 

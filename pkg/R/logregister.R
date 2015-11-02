@@ -24,15 +24,15 @@ logregister <- setRefClass("logregister"
         regname
       }
     , addfun = function(fun,logreg){
-        stopifnot(is.function(fun),is.character(logreg))
+        stopifnot(is.character(fun),is.character(logreg))
         if (!logreg %in% ls(envir=loggers)){
-          stop("Logger %s not registered.")
+          stop("Logger %s not registered.",logreg)
         }
-        fn <- as.character(substitute(fun))
+        fn <- fun
         functions[[fn]] <<- if (fn %in% ls(envir=functions)) c(functions[[fn]],logreg) else logreg
         msg <- sprintf("Function '%s' now logged by %s", fn, logreg)
         message(msg)
-        logger
+        logreg
     }
     , rmfun = function(fun, logreg=NULL){
         stopifnot(is.function(fun))
@@ -62,7 +62,7 @@ logregister <- setRefClass("logregister"
     # get loggers (list) for a certain function.
     , getloggers = function(fun){
         stopifnot(is.character(fun))
-        lapply(functions[[fn]], lgnames, get, envir=loggers)
+        lapply(functions[[fun]], get, envir=loggers)
     }
     , status = function(){
       cat("Registered loggers:")
@@ -87,7 +87,7 @@ LOGREG <- logregister(loggers=new.env(),logcount=numeric(), functions=new.env())
 #' 
 #' @export
 check_logger <- function(x){
-  xnames <- ls(x)
+  xnames <- ls(envir = x$.refClassDef@refMethods)
   errors <- character(0)
   warnings <- character(0)
   
@@ -118,4 +118,21 @@ is_logger <- function(x){
     stop(simpleError(paste(cl,collapse="\n"),call=sys.call(1)[[1]]))
 }
 
+#' Add a logger to the logging registry
+#'
+#' @param logger  A \code{logger}. By default, \code{\link{shortlog}} is used.
+#'
+#' @export 
+add_logger <- function(logger=shortlog()){
+  LOGREG$addlogger(logger)
+}
+
+#' Add a function to the logging registry
+#'
+#' @param fun function to add to registry.
+#' @param logreg \code{[character]} Name of a registered logger.
+#' @export
+set_log <- function(fun,logreg){
+  LOGREG$addfun(as.character(substitute(fun)),logreg)
+}
 
