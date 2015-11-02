@@ -3,6 +3,6 @@
 [![CRAN](http://www.r-pkg.org/badges/version/datalog)](http://cran.r-project.org/package=datalog/)
 [![Downloads](http://cranlogs.r-pkg.org/badges/datalog)](http://www.r-pkg.org/pkg/datalog) 
 
-# datalog
+# data.log
 
 Logging framework for tracking changes in datasets
