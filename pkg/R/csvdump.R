@@ -5,13 +5,15 @@ NULL
 #'
 #' This logger enables you to dump a csv-copy of a dataset. Filenames are numbered automatically.
 #' 
-#' @usage csvdump(dir,format)
+#' @section Constructor:
 #' 
-#' @param dir \code{[character]} Path to a directory to dump files into. 
+#' \code{csvdump(dir, format)}
+#' 
+#' @field dir \code{[character]} Path to a directory to dump files into. 
 #'    By default, \code{\link[base]{tempdir}()/output} is used. If the directory does not exist,
 #'    it will be created when de logger is created.
 #'    
-#' @param format \code{[character]} Either \code{"csv2"} (default) or \code{"csv"}. The 
+#' @field format \code{[character]} Either \code{"csv2"} (default) or \code{"csv"}. The 
 #' \code{csv} format to use.
 #'
 #' @section Hook:

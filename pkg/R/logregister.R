@@ -84,8 +84,6 @@ LOGREG <- logregister(loggers=new.env(),logcount=numeric(), functions=new.env())
 
 #' Check if an object is acceptable as a logger.
 #' @param x An R object. Candidate logger
-#' @param err Boolean toggle: emit error if x is not a valid logger?
-#' @param warn Boolean toggle: emit warning if x is a valid logger but?
 #' 
 #' @export
 check_logger <- function(x){
