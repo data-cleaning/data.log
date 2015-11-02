@@ -61,7 +61,7 @@ logregister <- setRefClass("logregister"
     }
     # get loggers (list) for a certain function.
     , getloggers = function(fun){
-        fn <- as.character(substitute(fun))
+        stopifnot(is.character(fun))
         lapply(functions[[fn]], lgnames, get, envir=loggers)
     }
     , status = function(){

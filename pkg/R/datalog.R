@@ -6,8 +6,7 @@
 #'
 #'    
 #' @docType package
-#' @name validate.log
-#' @aliases package-validate validate
+#' @name datalogger
 #' @import methods 
 #' @import RSQLite
 NULL

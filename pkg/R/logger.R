@@ -1,6 +1,21 @@
-
+#' @include logregister.R
+NULL
 
 logger <- setRefClass("logger", fields=c(con="ANY"))
+
+#' Call the loggers
+#'
+#' @param old Old dataset to pass to the logger(s)
+#' @param new New dataset to pass to the logger(s)
+#' @param ... Extra arguments passed to the loggers
+#'
+#' @export 
+write_log <- function(old, new, ...){
+  fn <- as.character(sys.call(1)[[1]])
+  loggers <- LOGREG$getloggers(fn)
+  for ( lg in loggers ) lg$log(old, new, ...)
+}
+
 
 #' Create a simplediff instance.
 #'
@@ -83,11 +98,6 @@ simple_diff_db <- function(file= ":memory:" ){
   con
 }
 
-
-writelog <- function(old, new,...){
-  sidi$log(old=old,new=new)
-  new
-}
 
 
 
