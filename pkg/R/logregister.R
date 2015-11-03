@@ -254,22 +254,13 @@ get_con <- function(logreg){
 #' \item{For \code{unset_log} \code{[character]}: \code{NULL} (invisibly)}
 #' \item{For \code{logreg_clear}\code{[character]}:\code{NULL} (invisibly)}
 #' }
-#' @export
 #' 
 #' @example ../examples/logging.R
 #'
+#' @export
 set_log <- function(fun,logreg){
   invisible(LOGREG$addfun(as.character(substitute(fun)),logreg))
 }
-
-# Remove a function from a logger
-# 
-# @param fun \code{[function]} Function to remove from registry
-# @param logreg \code{[character]} Name of the registered logger that no longer
-#   to be associated with \code{fun}. If this is left empty. the function is
-#   removed completely from the registry so it is not logged by any logger.
-# 
-# 
 
 
 #' @rdname set_log
