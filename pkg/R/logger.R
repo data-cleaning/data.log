@@ -1,5 +1,3 @@
-#' @include logregister.R
-NULL
 
 logger <- setRefClass("logger", fields=c(con="ANY"))
 

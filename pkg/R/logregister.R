@@ -206,18 +206,21 @@ add_logger <- function(logger=shortlog()){
 
 
 #' @rdname  add_logger
+#' @export
 rm_logger <- function(logreg){
   if (missing(logreg)) logreg <- NULL
   LOGREG$rmlogger(logreg)
 }
 
 #' @rdname add_logger
+#' @export
 get_logger <- function(logreg){
   stopifnot(is.character(logreg))
   LOGREG$loggers[[logreg]]
 }
 
 #' @rdname add_logger
+#' @export
 get_con <- function(logreg){
   stopifnot(is.character(logreg))
   LOGREG$logreg[[logreg]]$con
@@ -269,6 +272,7 @@ set_log <- function(fun,logreg){
 
 
 #' @rdname set_log
+#' @export
 unset_log <- function(fun,logreg){
   fn <- as.character(substitute(fun))
   logreg <- if (!missing(logreg)) logreg # else NULL
@@ -278,12 +282,14 @@ unset_log <- function(fun,logreg){
 
 
 #' @rdname set_log
+#' @export
 logreg_clear <- function(){
   LOGREG$clear()
 }
 
 
 #' @rdname set_log
+#' @export
 logreg_status <- function(){
   LOGREG$status()
 }

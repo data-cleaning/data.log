@@ -1,17 +1,4 @@
-#' Single-line textlogger.
-#'
-#' @field con Connection to send output to. If no connection is given, \code{stdout} is used.
-#' 
-#' @section Constructor:
-#' 
-#' \code{   shortlog(con)}
-#' 
-#' @section Hook:
-#' 
-#' When \code{\link{write_log}} is called, a single-line summary is printed to \code{con}.
-#'
-#' @export 
-shortlog <- setRefClass("shortlog"
+setRefClass("shortlog"
     , contains = "logger"
     , methods  = list(
       initialize = function(con=stdout()){
@@ -33,6 +20,17 @@ shortlog <- setRefClass("shortlog"
     ) # end of methods
 )
                         
-
+#' Single-line textlogger.
+#'
+#' @param con Connection to send output to. If no connection is given, \code{stdout} is used.
+#' 
+#' @section Hook:
+#' 
+#' When \code{\link{write_log}} is called, a single-line summary is printed to \code{con}.
+#'
+#' @return An object of class \code{shortlog}.
+#'
+#' @export
+shortlog <- function(con=stdout()) new("shortlog",con=con)
 
 
