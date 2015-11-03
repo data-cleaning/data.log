@@ -179,16 +179,17 @@ is_logger <- function(x){
 #' type of logger and the status of the connection (open, closed)}
 #' }
 #' 
-#' The idea of this package is to be extendable. That is, any package may extend this package
-#' by writing a logger that can be registered by this package. The documentation in this
-#' package is probably not enough to get you started. You can browse the 
-#' \href{https://github.com/data-cleaning/data.log/blob/master/pkg/R/shortlog.R}{source code}
-#' for inspiration of follow the tutorial in the following vignette:
+#' The idea of this package is to be extendable. That is, any package or script
+#' may extend this package by writing a logger that can be registered by this
+#' package. The documentation in this package is probably not enough to get you
+#' started. You can browse the 
+#' \href{https://github.com/data-cleaning/data.log/blob/master/pkg/R/shortlog.R}{source
+#' code} for inspiration of follow the tutorial in the following vignette:
 #' 
 #' \code{  packageVignette("Adding loggers",package="data.log")}
 #' 
-#' Finally, the function \code{\link{logger_template}} creates a file with a template
-#' for you to fill in.
+#' Finally, the function \code{\link{logger_template}} creates a file with a
+#' template for you to fill in.
 #' 
 #' 
 #' @return 
