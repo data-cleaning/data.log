@@ -12,14 +12,21 @@ change <- function(df){
 
 # let's add a logger to the logging registry
 # This logger just writes a single line to screen.
-lg <- add_logger(shortlog())
+lg <- add_logger(simplediff())
 
 # let's assign the logger to a function
 set_log(change, lg)
 
 # check the registry
-LOGREG$status()
+logreg_status()
+
 
 w1 <- change(women)
-w2 <- change(women)
+w2 <- change(w1)
 
+
+sd <- get_logger(lg)
+sd$get_log()
+
+logreg_clear()
+logreg_status()

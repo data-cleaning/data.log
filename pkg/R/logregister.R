@@ -61,7 +61,7 @@ logregister <- setRefClass("logregister"
       }
     , clear = function(){
       for (lg in ls(loggers)){
-        lg$close()
+        loggers[[lg]]$close()
       }
       rm(list=ls(envir=loggers),pos=loggers)
       logcount <<- numeric()
