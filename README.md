@@ -36,7 +36,7 @@ lg <- add_logger(shortlog())
 set_log(change, lg)
 
 # check the registry
-LOGREG$status()
+logreg_status()
 
 w1 <- change(women)
 w2 <- change(women)
