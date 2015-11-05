@@ -224,7 +224,7 @@ get_logger <- function(logreg){
 #' @export
 get_con <- function(logreg){
   stopifnot(is.character(logreg))
-  LOGREG$logreg[[logreg]]$con
+  LOGREG$loggers[[logreg]]$con
 }
 
 #' Add of remove functions to the registry
