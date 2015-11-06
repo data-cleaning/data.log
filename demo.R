@@ -4,10 +4,10 @@ devtools::load_all('pkg')
 # a function that makes some changes.
 change <- function(df){
   # store the old value
-  .df <- df
+  old <- df
   df[1,1] <- 2*df[1,1]
   # this is the 'hook' to log, if the function is registered.
-  write_log(old=.df, new=df)
+  write_log(dat=df, ref=old)
 }
 
 # let's add a logger to the logging registry

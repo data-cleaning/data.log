@@ -5,8 +5,8 @@ logger <- setRefClass("logger", fields=c(con="ANY"))
 #'
 #' Get the registered loggers for a function and execute them.
 #'
-#' @param old Old dataset to pass to the logger(s)
-#' @param new New dataset to pass to the logger(s)
+#' @param dat dataset to pass to the logger(s)
+#' @param ref reference dataset to pass to the logger(s)
 #' @param ... Extra arguments passed to the loggers
 #'
 #' @section Details:
@@ -17,7 +17,7 @@ logger <- setRefClass("logger", fields=c(con="ANY"))
 #' \enumerate{
 #'   \item{It finds out what function called \code{write_log}.}
 #'   \item{It asks the central logging registry what loggers are registered for the calling function.}
-#'   \item{The loggers are called as follows \code{[logger]$log(old=old, new=new, method=method, ...)}}
+#'   \item{The loggers are called as follows \code{[logger]$log(dat=dat, ref=ref, method=method, ...)}}
 #'   \item{The set \code{new} is returned, invisibly}
 #' }
 #' 
@@ -34,16 +34,16 @@ logger <- setRefClass("logger", fields=c(con="ANY"))
 #' change <- function(df){
 #'   .df <- df
 #'   df[1,1] <- 2*df[1,1]
-#'   writelog(old=.df, new=df)
+#'   writelog(dat=.df, ref=df)
 #' } 
 #' 
 #'
 #' @export 
-write_log <- function(old, new, ...){
+write_log <- function(dat, ref, ...){
   fn <- as.character(sys.call(1)[[1]])
   loggers <- LOGREG$getloggers(fn)
-  for ( lg in loggers ) lg$log(old=old, new=new, method=fn, ...)
-  invisible(new)
+  for ( lg in loggers ) lg$log(dat=dat, ref=ref, method=fn, ...)
+  invisible(dat)
 }
 
 #' Create a template logger
@@ -78,8 +78,8 @@ setRefClass({{{name}}}
     # make this function return a short string stating
     # the object class and connection status (or value)
   }
-  , log = function(old, new, method,...){
-      # inspect the old and new value, and send logging info (including 'method')
+  , log = function(dat, ref, method,...){
+      # inspect the dat and (possibly) ref, and send logging info (including 'method')
       # to the connection. 
     }
   ) # end of methods

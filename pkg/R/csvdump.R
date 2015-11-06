@@ -9,22 +9,23 @@ setRefClass("csvdump"
         if (!file.exists(dir)){
           dir.create(dir,recursive=TRUE)
         }
+        n <<- 0
         con <<- dir
-        format <<- match.arg(format)
+        format <<- format
         writer <<- if (format == "csv2"){ 
-          function(x,file) write.csv2(x=x,file=file,row.names=FALSE)
+          function(x,fl) write.csv2(x=x, file=file.path(.self$con,fl), row.names=FALSE)
         } else {
-          function(x,file) write.csv(x=x,file=file,row.names=FALSE)
+          function(x,fl) write.csv(x=x, file=file.path(.self$con,fl), row.names=FALSE)
         }
       }
     , close = function() invisible(TRUE)
     , status = function(){
        sprintf("'%s' object writing to %s",class(.self),con)
     }
-    , log = function(old, new, method, ...){
-        missing(old) # just so this argument is used.
+    , log = function(dat, ref, method, ...){
+        missing(ref) # just so this argument is used.
         fl <- sprintf("dump-%3d-%s.csv",n,method)
-        writer(new, file.path(dir,fl))
+        writer(x=dat, fl=fl)
         n <<- n + 1
     }
   )
@@ -43,7 +44,7 @@ setRefClass("csvdump"
 #' \code{csv} format to use.
 #'
 #' @section Hook:
-#' When \code{\link{write_log}} is called, the data in argument \code{new} is written to 
+#' When \code{\link{write_log}} is called, the data in argument \code{dat} is written to 
 #' a file named 
 #' 
 #' \code{   dump-[nnn]-[method].csv},
@@ -54,5 +55,6 @@ setRefClass("csvdump"
 #' @export
 csvdump <- function(dir=file.path(tempdir(),"output"), format=c("csv2","csv")){
   stopifnot(is.character(dir))
-  new("csvdump",dir=dir,format=match.arg(format))
+  format <- match.arg(format)
+  new("csvdump",dir=dir,format=format)
 }

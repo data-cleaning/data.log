@@ -15,21 +15,21 @@ setRefClass("simplediff",contains="logger"
     , close = function(){
         dbDisconnect(con)
     }
-    , log = function(old, new, method, key=NULL, note=NULL){
+    , log = function(dat, ref, method, key=NULL, note=NULL){
         if (missing(note)) note <- ""
         if (missing(key))
-        vo <- names(old)
-        vn <- names(new)
+        vo <- names(dat)
+        vn <- names(ref)
         added_var <- vo[!vo %in% vn]
         removed_var <- vn[!vn %in% vo]
         kept_var <- vo[vo %in% vn]
-        A <- which(old[kept_var] != new[kept_var], arr.ind=TRUE)
+        A <- which(dat[kept_var] != ref[kept_var], arr.ind=TRUE)
         # TODO: add logging of added/removed columns
         lg <- data.frame(
           timestamp      = Sys.time()
-          , old          = format(old[kept_var][A], digits=16)
-          , new          = format(new[kept_var][A], digits=16)
-          , recordid     = store_pk(con,"record",  if (is.null(key)) A[,1] else old[A[,1],key] ) 
+          , old          = format(ref[kept_var][A], digits=16)
+          , new          = format(dat[kept_var][A], digits=16)
+          , recordid     = store_pk(con,"record",  if (is.null(key)) A[,1] else dat[A[,1],key] ) 
           , variableid  = store_pk(con, 'variable', kept_var[A[,2]])
           , methodid     = store_pk(con,'method',method)
           , noteid       = if(is.null(note)) NA else store_pk(con,'note',note)
@@ -58,7 +58,7 @@ setRefClass("simplediff",contains="logger"
 #' 
 #' @section Details:
 #' The \code{simplediff} logger compares two rectangular data sets (data.frames)
-#' (\code{old} and \code{new}), and assumes that
+#' (\code{dat} (new dataset) and \code{ref} (old dataset)), and assumes that
 #' \itemize{
 #'   \item{the record number and order is the same in \code{old} and \code{new}.}
 #' }

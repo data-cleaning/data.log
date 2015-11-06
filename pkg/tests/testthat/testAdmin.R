@@ -1,6 +1,4 @@
 
-#devtools::load_all('pkg')
-#library(testthat)
 
 context("Logger administration")
 
