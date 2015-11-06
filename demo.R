@@ -1,6 +1,8 @@
 
 devtools::load_all('pkg')
 
+a <- csvdump()
+
 # a function that makes some changes.
 change <- function(df){
   # store the old value

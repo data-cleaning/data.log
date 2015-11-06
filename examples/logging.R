@@ -4,7 +4,7 @@ change <- function(df){
   .df <- df
   df[1,1] <- 2*df[1,1]
   # this is the 'hook' to log, if the function is registered.
-  write_log(old=.df, new=df)
+  write_log(dat=.df, ref=df)
 }
 
 # let's add a logger to the logging registry
