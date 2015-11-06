@@ -40,7 +40,7 @@ logger <- setRefClass("logger", fields=c(con="ANY"))
 #'
 #' @export 
 write_log <- function(dat, ref, ...){
-  fn <- as.character(sys.call(1)[[1]])
+  fn <- as.character(sys.call(-1)[[1]])
   loggers <- LOGREG$getloggers(fn)
   for ( lg in loggers ) lg$log(dat=dat, ref=ref, method=fn, ...)
   invisible(dat)

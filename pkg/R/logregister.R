@@ -87,7 +87,7 @@ logregister <- setRefClass("logregister"
     # get loggers (list) for a certain function.
     , getloggers = function(fun){
         stopifnot(is.character(fun))
-        lapply(functions[[fun]], get, envir=loggers)
+        lapply(functions[[fun]], get, envir=.self$loggers)
     }
     , status = function(quiet){
       if (!quiet){
