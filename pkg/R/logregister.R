@@ -10,9 +10,14 @@ logregister <- setRefClass("logregister"
         loggers    = "environment"  # hold loggers, named.
       , functions  = "environment"  # hold function names, with their loggers.
       , logcount   = "numeric"      # count loggers per class
+      , verbosity  = "numeric"      # 1/0 print messages yes/no?
       )
     , methods=list(
-      addlogger = function(logger=simplediff()){
+      talk = function(m){
+        if (verbosity == 0) return(invisible(NULL))
+        message(m)
+      }
+    , addlogger = function(logger=simplediff()){
         # stops if 'logger' is not valid.
         is_logger(logger)
         cname = class(logger)[[1]]
@@ -20,44 +25,56 @@ logregister <- setRefClass("logregister"
         regname <- sprintf("%s%02d",cname,logcount[cname]) 
         loggers[[regname]] <<- logger
         msg <- sprintf("Registered logger of class %s under %s",cname,regname)
-        message(msg)
+        .self$talk(msg)
         regname
       }
     , rmlogger = function(logreg){
         if (is.null(logreg)){
           rm(list=ls(envir=loggers), pos=loggers)
+          .self$talk("Removed all loggers from registry")
         } else {
+          if (!logreg %in% ls(envir=loggers)){
+            .self$talk(sprintf("I do not have a logger called %s :(",logreg))
+            return(FALSE)
+          }
           stopifnot( is.character(logreg) )
-          rm(logreg, envir=loggers)
+          do.call(rm, list(logreg, envir=loggers) )
+          .self$talk(sprintf("Removed %s",logreg))
         }
+        TRUE
     }
     , addfun = function(fun,logreg){
-        stopifnot(is.character(fun),is.character(logreg))
         if (!logreg %in% ls(envir=loggers)){
-          stop("Logger %s not registered.",logreg)
+          .self$talk(sprintf("I do not have a logger called %s :(",logreg))
+          return(FALSE)
         }
         fn <- fun
         functions[[fn]] <<- if (fn %in% ls(envir=functions)) c(functions[[fn]],logreg) else logreg
         msg <- sprintf("Function '%s' now logged by %s", fn, logreg)
-        message(msg)
-        logreg
+        .self$talk(msg)
+        TRUE
     }
     , rmfun = function(fun, logreg=NULL){
-        stopifnot(is.function(fun))
-        fn <- as.character(substitute(fun))
+        if (! fun %in% ls(functions) ){
+          .self$talk(sprintf("I do not have a function called %s :(",fun))
+          return(FALSE)
+        }
         if (is.null(logreg)){ # remove all loggers for fun
-          rm(fn,envir=functions)
+          do.call(rm, list(fun,envir=functions))
+          .self$talk(sprintf("%s is no longer logged",fun))
         } else {
           stopifnot(is.character(logreg))
           if ( !logreg %in% ls(envir=loggers) ){
-            stop('%s is not a registered logger',logreg)
+            .self$talk(sprintf("I do not have a logger called %s :(",logreg))
+            return(FALSE)
           }
-          functions[[fn]][logreg] <<- NULL
-          if (length(functions[[fn]])==0){
-            rm(fn,envir=functions)
+          functions[[fun]][logreg] <<- NULL
+          if (length(functions[[fun]])==0){
+            do.call(rm, list(fun,envir=functions) )
+            .self$talk(sprintf("%s no longer logged by %s",fun,logreg))
           }
-            
         }
+        TRUE
       }
     , clear = function(){
       for (lg in ls(loggers)){
@@ -72,22 +89,25 @@ logregister <- setRefClass("logregister"
         stopifnot(is.character(fun))
         lapply(functions[[fun]], get, envir=loggers)
     }
-    , status = function(){
-      cat("Registered loggers:")
-      for (x in ls(envir=loggers)){
-        cat( sprintf("  \n%15s [%s]",x,loggers[[x]]$status()) )
+    , status = function(quiet){
+      if (!quiet){
+        cat("Registered loggers:")
+        for (x in ls(envir=loggers)){
+          cat( sprintf("  \n%15s [%s]",x,loggers[[x]]$status()) )
+        }
+        cat("\nLogged functions:")
+        for (x in ls(envir=functions) ){
+          cat( sprintf("\n%15s - logged by %s",x,paste(functions[[x]],collapse=", ")) )
+        }
+        cat("\n")
       }
-      cat("\nLogged functions:")
-      for (x in ls(envir=functions) ){
-        cat( sprintf("\n%15s - logged by %s",x,paste(functions[[x]],collapse=", ")) )
-      }
-      cat("\n")
+      list(loggers = ls(loggers), functions=as.list(functions))
     }
   ) # end method list
 )
 
 # internal logging register
-LOGREG <- logregister(loggers=new.env(),logcount=numeric(), functions=new.env())
+LOGREG <- logregister(loggers=new.env(),logcount=numeric(), functions=new.env(), verbosity=1)
 
 
 #' Check if an object is acceptable as a logger.
@@ -259,6 +279,8 @@ get_con <- function(logreg){
 #'
 #' @export
 set_log <- function(fun,logreg){
+# TODO: decide on this check. Rester a function before loading it?
+  stopifnot(is.function(fun))
   invisible(LOGREG$addfun(as.character(substitute(fun)),logreg))
 }
 
@@ -266,6 +288,8 @@ set_log <- function(fun,logreg){
 #' @rdname set_log
 #' @export
 unset_log <- function(fun,logreg){
+# TODO: decide on this check. Rester a function before loading it?
+  stopifnot(is.function(fun))
   fn <- as.character(substitute(fun))
   logreg <- if (!missing(logreg)) logreg # else NULL
   invisible(LOGREG$rmfun(fn,logreg))
@@ -282,7 +306,25 @@ logreg_clear <- function(){
 
 #' @rdname set_log
 #' @export
-logreg_status <- function(){
-  LOGREG$status()
+logreg_status <- function(quiet=FALSE){
+  invisible(LOGREG$status(quiet=quiet))
 }
 
+#' Toggle talkativity
+#' 
+#' By default, the logging register prints messages when a function or
+#' logger is added or removed. This can be toggled on or off.
+#'
+#' @export
+logreg_shutup <- function(){
+  LOGREG$verbosity <- 0
+  invisible(LOGREG$verbosity)
+}
+
+
+#' @rdname logreg_shutup
+#' @export
+logreg_talk <- function(){
+  LOGREG$verbosity <- 1L
+  invisible(LOGREG$verbosity)
+}
