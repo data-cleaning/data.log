@@ -305,6 +305,7 @@ logreg_clear <- function(){
 
 
 #' @rdname set_log
+#' @param quiet Toggle status printing
 #' @export
 logreg_status <- function(quiet=FALSE){
   invisible(LOGREG$status(quiet=quiet))
